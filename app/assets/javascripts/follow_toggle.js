@@ -7,8 +7,15 @@ $.FollowToggle = function (el) {
 };
 
 $.FollowToggle.prototype.render = function () {
-  if (this.followState === "unfollowed") {
-    console.log(this.followState);
+  if (this.followState === "unfollowing") {
+    this.followState = "unfollowed";
+    this.$el.html("Follow!");
+    this.$el.prop("disabled", false);
+  } else if (this.followState === "following") {
+    this.followState = "followed";
+    this.$el.html("Unfollow!");
+    this.$el.prop("disabled", false);
+  } else if (this.followState === "unfollowed") {
     this.$el.html("Follow!");
   } else if (this.followState === "followed") {
     this.$el.html("Unfollow!");
@@ -22,29 +29,26 @@ $.FollowToggle.prototype.bindEvents = function () {
 $.FollowToggle.prototype.handleClick = function (event) {
   event.preventDefault();
   if (this.followState === "unfollowed") {
-    $.ajax({
-      method: "POST",
-      url: this.$el.parent().attr("action"),
-      data: {},
-      dataType: "json",
-      success: function(data) {
-        this.followState = "followed";
-        this.render();
-      }.bind(this)
-    })
+    var method = "POST";
+    var newState = "following"
   } else {
-    debugger;
+    var method = "DELETE";
+    var newState = "unfollowing";
+
+    }
+    this.$el.prop("disabled", true);
+    this.$el.html(newState);
     $.ajax({
-      method: "DELETE",
+      method: method,
       url: this.$el.parent().attr("action"),
       data: {},
       dataType: "json",
       success: function(data) {
-        this.followState = "unfollowed";
+        this.followState = newState;
+
         this.render();
-        }.bind(this)
-    })
-  };
+      }.bind(this)})
+
 };
 
 $.fn.followToggle = function () {
