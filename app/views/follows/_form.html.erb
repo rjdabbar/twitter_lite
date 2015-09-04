@@ -1,0 +1,6 @@
+
+
+<form class="" action="<%= user_follow_url(user) %>" method="post">
+  <%= form_auth_token %>
+  <button class="follow-toggle" data-user-id="<%= user.id %>" data-initial-follow-state="unfollowed"></button>
+</form>
