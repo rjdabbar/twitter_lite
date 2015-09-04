@@ -12,5 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require serialize_json
 //= require follow_toggle
 //= require users_search
+//= require tweet_compose
