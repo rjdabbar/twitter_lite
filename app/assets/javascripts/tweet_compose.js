@@ -7,7 +7,17 @@ $.TweetCompose = function (el) {
 $.TweetCompose.prototype.bindEvents = function () {
   this.$el.on("submit", this.submit.bind(this));
   this.$el.on("input", "textarea", this.handleTweetLength.bind(this));
+  this.$el.on("click", "a.add-mentioned-user", this.addMentionedListener.bind(this));
+  this.$el.on("click", "a.remove-mentioned-user", this.removeMentionedListener.bind(this));
 }
+
+$.TweetCompose.prototype.addMentionedListener = function (event) {
+  $("div.mention-users").append($("#select-script").html());
+};
+
+$.TweetCompose.prototype.removeMentionedListener = function (event) {
+  $(event.currentTarget).parent().remove();
+};
 
 $.TweetCompose.prototype.handleTweetLength = function (event) {
   var currentChars = $(event.currentTarget).val().length;
@@ -17,31 +27,28 @@ $.TweetCompose.prototype.handleTweetLength = function (event) {
 $.TweetCompose.prototype.submit = function(event) {
   event.preventDefault();
   var formContents = $(event.currentTarget).serializeJSON();
-  $(":input").prop("disable", true);
+  this.$el.find(":input").prop("disabled", true);
   $.ajax({
     method: "POST",
     url: "http://localhost:3000/tweets",
     data: formContents,
     dataType: "json",
-    success: function(data) {
-      this.handleSuccess(data, event);
-
-    }.bind(this)
-  })
+    success: this.handleSuccess.bind(this, data)
+  });
 }
 
-$.TweetCompose.prototype.handleSuccess = function(data, event) {
-  this.clearInput(event);
-  $(":input").prop("disable", false);
-  debugger
+$.TweetCompose.prototype.handleSuccess = function(data) {
+  this.clearInput();
+  this.$el.find(":input").prop("disabled", false);
+
   var tweet = JSON.stringify(data);
   var html = "<li>" + tweet + "</li>";
   this.$ul.prepend(html);
 }
 
-$.TweetCompose.prototype.clearInput = function(event) {
+$.TweetCompose.prototype.clearInput = function() {
   this.$el.find("textarea").val("");
-  this.$el.find("select").val("");
+  $("div.mention-users").empty();
 }
 
 $.fn.tweetCompose = function () {

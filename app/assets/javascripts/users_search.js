@@ -15,9 +15,7 @@ $.UsersSearch.prototype.handleInput = function (event) {
     url: "http://localhost:3000/users/search",
     data: { query: this.$input.val() },
     dataType: "json",
-    success: function (data) {
-    this.renderResults(data)
-    }.bind(this)
+    success: this.renderResults.bind(this, data)
   })
 };
 
