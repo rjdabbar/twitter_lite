@@ -16,17 +16,22 @@ $.UsersSearch.prototype.handleInput = function (event) {
     data: { query: this.$input.val() },
     dataType: "json",
     success: function (data) {
-    console.log(data);
     this.renderResults(data)
     }.bind(this)
   })
 };
 
 $.UsersSearch.prototype.renderResults = function (data) {
+  console.log(data);
   this.$ul.empty();
   data.forEach(function(user) {
-    var html = "<li>" + user.username + "</li>";
+    var button = "<button id=" + user.id + " class=\"follow-toggle\"></button>";
+    var followedStatus = user.followed ? "followed" : "unfollowed";
+    // debugger;
+    var options = { userId: user.id, followState: followedStatus };
+    var html = "<li>" + user.username + button + "</li>";
     this.$ul.append(html);
+    $("button#" + user.id).followToggle(options)
   }.bind(this))
 };
 

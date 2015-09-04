@@ -1,9 +1,10 @@
-$.FollowToggle = function (el) {
+$.FollowToggle = function (el, options) {
   this.$el = $(el);
-  this.userId = this.$el.data("user-id");
-  this.followState = this.$el.data("initial-follow-state");
+  this.userId = this.$el.data("user-id") || options.userId;
+  this.followState = this.$el.data("initial-follow-state") || options.followState;
   this.render();
   this.bindEvents();
+  console.log(this.userId);
 };
 
 $.FollowToggle.prototype.render = function () {
@@ -40,7 +41,7 @@ $.FollowToggle.prototype.handleClick = function (event) {
     this.$el.html(newState);
     $.ajax({
       method: method,
-      url: this.$el.parent().attr("action"),
+      url: "http://localhost:3000/users/" + this.userId +"/follow",
       data: {},
       dataType: "json",
       success: function(data) {
@@ -51,9 +52,9 @@ $.FollowToggle.prototype.handleClick = function (event) {
 
 };
 
-$.fn.followToggle = function () {
+$.fn.followToggle = function (options) {
   return this.each(function () {
-    new $.FollowToggle(this);
+    new $.FollowToggle(this, options);
   });
 };
 
